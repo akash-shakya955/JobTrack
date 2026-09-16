@@ -1,9 +1,18 @@
 import express from "express";
+import jobRoutes from "./routes/jobRoutes.js";
+import connectDB from "./config/db.js";
 
 
 
 
 const app = express();
+
+connectDB();
+
+app.use(express.json());
+
+
+app.use("/api/jobs", jobRoutes);
 
 
 app.get("/", (req, res) => {
