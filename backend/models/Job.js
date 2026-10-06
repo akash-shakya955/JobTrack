@@ -5,16 +5,23 @@ const jobSchema = new mongoose.Schema({
 
     company: {
         type: String,
-        required: true
+        required: true,
+        minlength: 2,
+        maxlength: 50,
+        trim: true
     },
 
     position: {
         type: String,
-        required: true
+        required: true,
+        minlength: 2,
+        maxlength: 50,
+        trim: true
     },
 
     location: {
-        type: String
+        type: String,
+        trim: true
     },
 
     status: {
@@ -25,7 +32,8 @@ const jobSchema = new mongoose.Schema({
     },
 
     salary: {
-        type: String
+        type: String,
+        trim: true
     },
 
     applicationDate: {
@@ -38,7 +46,8 @@ const jobSchema = new mongoose.Schema({
     },
 
     notes: {
-        type: String
+        type: String,
+        trim: true
     }
 });
 
