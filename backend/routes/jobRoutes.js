@@ -8,7 +8,22 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
 
-    const jobs = await Job.find();
+    const company = req.query.company;
+    const status = req.query.status;
+    const filter = {};
+
+    if (company) {
+        filter.company = {
+            $regex: company,
+            $options: "i"
+        }
+    }
+
+    if (status) {
+        filter.status = status;
+    }
+
+    const jobs = await Job.find(filter);
     res.json({
         message: "All jobs",
         jobs: jobs
@@ -44,28 +59,41 @@ router.get("/:id", async (req, res) => {
 
 
 router.put("/:id", async (req, res) => {
-    const id = req.params.id;
 
-    if (!mongoose.isValidObjectId(id)) {
+    try {
+
+        const id = req.params.id;
+
+        if (!mongoose.isValidObjectId(id)) {
+            return res.status(400).json({
+                message: "Invalid job ID"
+            });
+        }
+
+        const job = await Job.findByIdAndUpdate(id, req.body, {
+            new: true,
+            runValidators: true
+        });
+
+        if (!job) {
+            return res.status(404).json({
+                message: "Job not found"
+            });
+        }
+
+        res.json({
+            message: "Job updated",
+            job: job
+        });
+
+    } catch (error) {
+
         return res.status(400).json({
-            message: "Invalid job ID"
-        });
-    }
-
-    const job = await Job.findByIdAndUpdate(id, req.body, { new: true });
-
-
-    if (!job) {
-        return res.status(404).json({
-            message: "Job not found"
+            message: "Failed to update job",
+            error: error.message
         });
 
     }
-
-    res.json({
-        message: "Job updated",
-        job: job
-    })
 
 });
 
